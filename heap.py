@@ -99,6 +99,7 @@ def report_counts_on_basic_ops(A, loop_extracts=1, loop_inserts=1):
     reset_counts()
     heapInsert(A, m)
     print("heapInsert(A, {}):       \t".format(m), current_counts())
+    print(A)
 
     for i in range(loop_extracts):
         reset_counts()
@@ -150,12 +151,9 @@ def heapify(A, i, mode = 0):
     if left(i) >= n or right(i) >= n:
         return
     if A[i] > A[left(i)] or A[i] > A[right(i)]:
-        if mode == 1:
-            swapParent(A, i)
-        else:
-            swapChildren(A, i)
+       swapHelper(A, i)
 
-def swapChildren(A, i):
+def swapHelper(A, i):
     if A[left(i)] < A[right(i)]:
         swap(A, i, left(i))
         heapify(A, left(i))
@@ -163,13 +161,6 @@ def swapChildren(A, i):
         swap(A, i, right(i))
         heapify(A, right(i))
 
-def swapParent(A, i):
-    if A[left(i)] < A[right(i)]:
-        swap(A, i, left(i))
-        heapify(A, parent(i))
-    else:
-        swap(A, i, right(i))
-        heapify(A, parent(i))
 
 def buildHeap(A):
     """Turn the list A (whose elements could be in any order) into a
@@ -183,7 +174,7 @@ def buildHeap(A):
 
     # Your code here
     middleOfList = n//2
-    for i in range(middleOfList - 1, -1, -1):
+    for i in range(middleOfList, -1, -1):
 
         heapify(A, i)
 
@@ -233,11 +224,19 @@ def heapInsert(A, v):
     if n > len(A):
         return
     A[n] = v
+    temp = n
     n += 1
-    if A[parent(n-1)] > v:
-        swap(A, n-1, parent(n-1))
+   # print("#########################")
+    while A[parent(temp)] > v and parent(temp) > -1:
+       # print("Temp: " + str(temp))
+        #print("Parent(temp): " + str(parent(temp)))
+        #print("A[parent(temp)]: " + str(A[parent(temp)]))
+       # print(A)
+        swap(A, temp, parent(temp))
 
-        heapify(A, parent(parent(n-1)))
+        temp = parent(temp)
+
+   # print("Temp: " + str(temp))
 
 
 
