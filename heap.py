@@ -18,17 +18,14 @@ def reset_counts():
     global heapify_call_count
     heapify_call_count = 0
 
-
 def swap(A, i, j):
     global swap_count
     swap_count += 1
     A[i], A[j] = A[j], A[i]
 
-
 def count_heapify():
     global heapify_call_count
     heapify_call_count += 1
-
 
 def current_counts():
     return {'swap_count': swap_count, 'heapify_call_count': heapify_call_count}
@@ -99,7 +96,6 @@ def report_counts_on_basic_ops(A, loop_extracts=1, loop_inserts=1):
     reset_counts()
     heapInsert(A, m)
     print("heapInsert(A, {}):       \t".format(m), current_counts())
-    print(A)
 
     for i in range(loop_extracts):
         reset_counts()
@@ -129,7 +125,7 @@ def right(i):
 # END DO NOT MODIFY
 
 
-def heapify(A, i, mode = 0):
+def heapify(A, i):
     """Ensure that the tree rooted at element i in the list A is a heap,
     assuming that the trees rooted at elements left(i) and right(i) are already
     heaps. Obviously, if left(i) or right(i) are >= n, then element i simply does
@@ -148,19 +144,22 @@ def heapify(A, i, mode = 0):
     """
 
     count_heapify() # This should be the first line of the heapify function, do not change.
-    if left(i) >= n or right(i) >= n:
+
+    if left(i) >= n and right(i) >= n:
         return
-    if A[i] > A[left(i)] or A[i] > A[right(i)]:
-       swapHelper(A, i)
-
-def swapHelper(A, i):
-    if A[left(i)] < A[right(i)]:
-        swap(A, i, left(i))
-        heapify(A, left(i))
-    else:
-        swap(A, i, right(i))
-        heapify(A, right(i))
-
+    elif left(i) < n and right(i) >= n:
+        if A[i] > A[left(i)]:
+            swap(A, i, left(i))
+            heapify(A, left(i))
+        else:
+            return
+    elif A[i] > A[left(i)] or A[i] > A[right(i)]:
+        if A[left(i)] < A[right(i)]:
+            swap(A, i, left(i))
+            heapify(A, left(i))
+        else:
+            swap(A, i, right(i))
+            heapify(A, right(i))
 
 def buildHeap(A):
     """Turn the list A (whose elements could be in any order) into a
@@ -175,10 +174,7 @@ def buildHeap(A):
     # Your code here
     middleOfList = n//2
     for i in range(middleOfList, -1, -1):
-
         heapify(A, i)
-
-
 
 def heapExtractMin(A):
     """Extract the min element from the heap A. Make sure that A
@@ -196,6 +192,8 @@ def heapExtractMin(A):
     global n
     if A[0] is None:
         return
+    if n < 1:
+        return
 
     minElement = A[0]
     swap(A, 0, n-1)
@@ -204,9 +202,6 @@ def heapExtractMin(A):
     heapify(A, 0)
 
     return minElement
-
-
-
 
 def heapInsert(A, v):
     """Insert the element v into the heap A. Make sure that A
@@ -221,30 +216,14 @@ def heapInsert(A, v):
     # Your code here
     global n
 
-    if n > len(A):
+    if n >= len(A):
         return
     A[n] = v
     temp = n
     n += 1
-   # print("#########################")
     while A[parent(temp)] > v and parent(temp) > -1:
-       # print("Temp: " + str(temp))
-        #print("Parent(temp): " + str(parent(temp)))
-        #print("A[parent(temp)]: " + str(A[parent(temp)]))
-       # print(A)
         swap(A, temp, parent(temp))
-
         temp = parent(temp)
-
-   # print("Temp: " + str(temp))
-
-
-
-
-
-
-
-
 
 def main():
     global db
