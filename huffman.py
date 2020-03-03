@@ -2,8 +2,19 @@ import sys
 
 
 def file_character_frequencies(file_name):
-    # Suggested helper
-    return {}
+    freqs = {}
+    numOfChars = 0
+    with open(file_name) as file:
+        for line in file:
+            fields = line.split()
+            for word in fields:
+                for letter in word:
+                    if letter in freqs:
+                        freqs[letter] += 1
+                    else:
+                        freqs[letter] = 1
+                    numOfChars += 1
+    return freqs
 
 
 class PriorityTuple(tuple):
