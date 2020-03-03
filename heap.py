@@ -148,13 +148,13 @@ def heapify(A, i):
     if left(i) >= n and right(i) >= n:
         return
     elif left(i) < n and right(i) >= n:
-        if A[i] > A[left(i)]:
+        if A[i] < A[left(i)]:
             swap(A, i, left(i))
             heapify(A, left(i))
         else:
             return
-    elif A[i] > A[left(i)] or A[i] > A[right(i)]:
-        if A[left(i)] < A[right(i)]:
+    elif A[i] < A[left(i)] or A[i] < A[right(i)]:
+        if A[left(i)] > A[right(i)]:
             swap(A, i, left(i))
             heapify(A, left(i))
         else:
@@ -221,7 +221,7 @@ def heapInsert(A, v):
     A[n] = v
     temp = n
     n += 1
-    while A[parent(temp)] > v and parent(temp) > -1:
+    while A[parent(temp)] < v and parent(temp) > -1:
         swap(A, temp, parent(temp))
         temp = parent(temp)
 
@@ -232,25 +232,11 @@ def main():
 
     global n
     global array_length
+    r = [16, 8, 15, 4, 7, 12, 14, 1, 2, 3, 5, 11, 10, 6, 9]
+    n = len(r)
 
-    A = shuffled_list(20, 0)
-    print("Complete Tree size 20:")
-    printCompleteTree(A)
-    buildHeap(A)
-    print("Heap size 20:")
-    printCompleteTree(A)
-
-    A = shuffled_list(30, 0)
-    report_counts_on_basic_ops(A)
-
-    A = shuffled_list(400, 0)
-    report_counts_on_basic_ops(A)
-
-    A = shuffled_list(10000, 0)
-    report_counts_on_basic_ops(A)
-
-    A = shuffled_list(100000, 0)
-    report_counts_on_basic_ops(A, 3, 3)
+    buildHeap(r)
+    print(r)
 
 if __name__ == "__main__":
     main()
