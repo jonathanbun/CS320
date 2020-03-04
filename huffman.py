@@ -1,5 +1,7 @@
 import sys
 import math
+import datetime
+
 
 class Heap:
     def __init__(self, A):
@@ -23,12 +25,14 @@ class Heap:
         if self.left(i) >= self.n and self.right(i) >= self.n:
             return
         elif self.left(i) < self.n <= self.right(i):
-            if self.A[i] > self.A[self.left(i)]:
+
+            if self.A[i] == self.A[self.left(i)] or self.A[i] < self.A[self.left(i)]:
+
                 self.swap(i, self.left(i))
                 self.heapify(self.left(i))
             else:
                 return
-        elif self.A[i] > self.A[self.left(i)] or self.A[i] > self.A[self.right(i)]:
+        else:
             if self.A[self.left(i)] < self.A[self.right(i)]:
                 self.swap(i, self.left(i))
                 self.heapify(self.left(i))
@@ -39,7 +43,6 @@ class Heap:
     def buildHeap(self):
         middleOfList = self.n // 2
         for i in range(middleOfList, -1, -1):
-            print("heapify")
             self.heapify(i)
 
     def heapExtractMin(self):
@@ -52,6 +55,7 @@ class Heap:
         self.swap(0, self.n - 1)
         self.A[self.n - 1] = None
         self.n -= 1
+
         self.heapify(0)
 
         return minElement
@@ -63,9 +67,15 @@ class Heap:
         self.A[self.n] = v
         temp = self.n
         self.n += 1
-        while self.A[self.parent(temp)] < v and self.parent(temp) > -1:
-            self.swap(temp, self.parent(temp))
-            temp = self.parent(temp)
+
+        if (self.A[self.parent(temp)]) is not None:
+            while (self.A[self.parent(temp)] < v and self.parent(temp) > 0):
+                print(self.A[self.parent(temp)])
+                self.swap(temp, self.parent(temp))
+                temp = self.parent(temp)
+                if self.A[self.parent(temp)] is None:
+                    break
+
 
 
 def file_character_frequencies(file_name):
@@ -81,6 +91,8 @@ def file_character_frequencies(file_name):
                     else:
                         freqs[letter] = 1
                     numOfChars += 1
+    for key in freqs:
+        freqs[key] /= numOfChars
     return freqs
 
 
@@ -96,15 +108,33 @@ class PriorityTuple(tuple):
 
 def huffman_codes_from_frequencies(frequencies):
     # Suggested helper
-    return {}
+    huffmanArray = []
+    for key in frequencies:
+        temp = PriorityTuple((frequencies[key], key))
+        huffmanArray.append(temp)
+    priorityQueue = Heap(huffmanArray)
+    priorityQueue.buildHeap()
+    while priorityQueue.n > 1:
+        temp1 = priorityQueue.heapExtractMin()
+        if temp1 is None:
+            break
+        temp2 = priorityQueue.heapExtractMin()
+        if temp2 is None:
+
+            break
+        newNode = PriorityTuple((temp1[0] + temp2[0], (temp1, temp2)))
+
+        priorityQueue.heapInsert(newNode)
+    print(priorityQueue.A)
+
+
 
 
 def huffman_letter_codes_from_file_contents(file_name):
     """WE WILL GRADE BASED ON THIS FUNCTION."""
     # Suggested strategy...
-    #freqs = file_character_frequencies(file_name)
-    #return huffman_codes_from_frequencies(freqs)
-    return {}
+    freqs = file_character_frequencies(file_name)
+    return huffman_codes_from_frequencies(freqs)
 
 
 def encode_file_using_codes(file_name, letter_codes):
@@ -171,17 +201,17 @@ def printCompleteTree(A):
 
 def main():
     """Provided to help you play with your code."""
-    """import pprint
+    import pprint
     frequencies = file_character_frequencies(sys.argv[1])
-    pprint.pprint(frequencies)
     codes = huffman_codes_from_frequencies(frequencies)
-    pprint.pprint(codes)"""
+    """
     l = shuffled_list(20, 0)
     h = Heap(l)
     print(l)
     printCompleteTree(h.A)
     h.buildHeap()
     printCompleteTree(h.A)
+    """
 
 
 
