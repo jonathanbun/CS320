@@ -129,7 +129,7 @@ def buildCodes(abc, freqs, total=""):
 
 
 def file_character_frequencies(file_name):
-    freqs = {' ': 0, '\n': 0}
+    freqs = {" ": 0, "\\n": 0}
     numOfChars = 0
     with open(file_name) as file:
         for line in file:
@@ -143,9 +143,9 @@ def file_character_frequencies(file_name):
                         freqs[letter] = 1
                     numOfChars += 1
         if len(nl) > 1:
-            freqs['\n'] += 1
+            freqs["\\n"] += 1
             numOfChars += 1
-        freqs[' '] += len(fields) - 1
+        freqs[" "] += len(fields) - 1
         numOfChars += len(fields) - 1
 
     for key in freqs:
@@ -171,19 +171,36 @@ def huffman_codes_from_frequencies(frequencies):
         temp2 = heapExtractMin(huffmanArray)
 
         temp5 = temp1[0][0] + temp2[0][0]
-        temp4 = [PriorityTuple((temp5, None)), temp1, temp2]
+        temp4 = [PriorityTuple((temp5, "7")), temp1, temp2]
 
 
 
 
         heapInsert(huffmanArray, temp4)
         total += 1
-    foo(huffmanArray[0])
+    for key in frequencies:
+        frequencies[key] = ""
+    foo(huffmanArray[0], frequencies, prefix = "", c = -1)
+    for key, value in frequencies.items():
+        print('\'',key, '\'', value)
+
     return frequencies
 
-def foo(A):
+def foo(A, freqs, prefix, c ):
+    """
     for x in A:
-        print(x)
+        if isinstance(x, tuple):
+            if x[1] is not "7":
+                print(x[1])
+        else:
+            foo(x, freqs, prefix)"""
+    if isinstance(A[0], tuple) and A[0] == "7":
+        
+        foo(A[1:], freqs, prefix, c)
+    elif isinstance(A[0], tuple) and A[0] != "7":
+
+
+
 
 
 
