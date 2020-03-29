@@ -1,39 +1,63 @@
 import sys
-import math
 
 array_length = 0 # ONCE SET FOR A GIVEN ARRAY, THIS SHOULD NEVER CHANGE
 # EVEN WHEN DOING OPERATIONS LIKE EXTRACT-MIN AND HEAP-INSERT
 
 n = 0 #length of the 'heap'. n <= array_length
 
+swap_count = 0
+heapify_call_count = 0
+
+
+class Node:
+    def __init__(self):
+        self.left = None
+        self.right = None
+
+
+def reset_counts():
+    global swap_count
+    swap_count = 0
+    global heapify_call_count
+    heapify_call_count = 0
+
+
+def count_heapify():
+    global heapify_call_count
+    heapify_call_count += 1
+
+
+def current_counts():
+    return {'swap_count': swap_count, 'heapify_call_count': heapify_call_count}
 
 
 def swap(A, i, j):
     A[i], A[j] = A[j], A[i]
 
+
 def parent(i):
     return (i - 1) // 2
+
 
 def left(i):
     return 2 * i + 1
 
+
 def right(i):
     return left(i) + 1
 
+
 def heapify(A, i):
+    count_heapify()
     if left(i) >= n and right(i) >= n:
         return
     elif left(i) < n <= right(i):
-
         if A[i] > A[left(i)]:
-
             swap(A, i, left(i))
             heapify(A, left(i))
         else:
             return
     elif A[i] > A[left(i)] or A[i] > A[right(i)]:
-
-
         if A[left(i)] < A[right(i)]:
             swap(A, i, left(i))
             heapify(A, left(i))
@@ -41,14 +65,14 @@ def heapify(A, i):
             swap(A, i, right(i))
             heapify(A, right(i))
 
+
 def buildHeap(A):
     global n
     n = len(A)  # The entire list A will be turned into a heap.
-    # So length of heap = length of array
     middleOfList = (n // 2)
-
     for i in range(middleOfList, -1, -1):
         heapify(A, i)
+
 
 def heapExtractMin(A):
     global n
@@ -56,15 +80,13 @@ def heapExtractMin(A):
         return
     if n < 1:
         return
-
     minElement = A[0]
     swap(A, 0, n - 1)
     A[n - 1] = None
     n -= 1
-
     heapify(A, 0)
-
     return minElement
+
 
 def heapInsert(A, v):
     global n
@@ -73,11 +95,7 @@ def heapInsert(A, v):
     A[n] = v
     temp = n
     n += 1
-
     if (A[parent(temp)]) is not None:
-
-
-
         while A[parent(temp)] > v and parent(temp) >= 0:
             swap(A, temp, parent(temp))
             temp = parent(temp)
@@ -129,7 +147,7 @@ def buildCodes(abc, freqs, total=""):
 
 
 def file_character_frequencies(file_name):
-    freqs = {" ": 0, "\\n": 0}
+    freqs = {" ": 0, "\n": 0}
     numOfChars = 0
     with open(file_name) as file:
         for line in file:
@@ -143,71 +161,49 @@ def file_character_frequencies(file_name):
                         freqs[letter] = 1
                     numOfChars += 1
         if len(nl) > 1:
-            freqs["\\n"] += 1
+            freqs["\n"] += 1
             numOfChars += 1
         freqs[" "] += len(fields) - 1
         numOfChars += len(fields) - 1
-
     for key in freqs:
         freqs[key] /= numOfChars
     return freqs
 
 
 def huffman_codes_from_frequencies(frequencies):
-    # Suggested helper
     global n
     huffmanArray = []
     for key in frequencies:
-        temp = [PriorityTuple((frequencies[key], key))]
+        temp = PriorityTuple((frequencies[key], key))
         huffmanArray.append(temp)
-
     buildHeap(huffmanArray)
-    total = 1
-
-
     while n != 1:
         temp1 = heapExtractMin(huffmanArray)
-
         temp2 = heapExtractMin(huffmanArray)
-
-        temp5 = temp1[0][0] + temp2[0][0]
-        temp4 = [PriorityTuple((temp5, "7")), temp1, temp2]
-
-
-
-
+        node = Node()
+        node.left = temp1
+        node.right = temp2
+        temp3 = temp1[0] + temp2[0]
+        temp4 = PriorityTuple((temp3, node))
         heapInsert(huffmanArray, temp4)
-        total += 1
+
     for key in frequencies:
         frequencies[key] = ""
-    foo(huffmanArray[0], frequencies, prefix = "", c = -1)
-    for key, value in frequencies.items():
-        print('\'',key, '\'', value)
 
+    foo(huffmanArray[0], frequencies, prefix="")
     return frequencies
 
-def foo(A, freqs, prefix, c ):
-    """
-    for x in A:
-        if isinstance(x, tuple):
-            if x[1] is not "7":
-                print(x[1])
-        else:
-            foo(x, freqs, prefix)"""
-    if isinstance(A[0], tuple) and A[0] == "7":
-        
-        foo(A[1:], freqs, prefix, c)
-    elif isinstance(A[0], tuple) and A[0] != "7":
 
-
-
-
-
+def foo(a, freqs, prefix):
+    if a[1] not in freqs:
+        foo(a[1].left, freqs, prefix + "0")
+        foo(a[1].right, freqs, prefix + "1")
+    else:
+        freqs[a[1]] += prefix
 
 
 def huffman_letter_codes_from_file_contents(file_name):
     """WE WILL GRADE BASED ON THIS FUNCTION."""
-    # Suggested strategy...
     freqs = file_character_frequencies(file_name)
     return huffman_codes_from_frequencies(freqs)
 
@@ -244,21 +240,9 @@ def decode_file_using_codes(file_name_encoded, letter_codes):
     print("Wrote decoded text to {}".format(file_name_encoded_decoded))
 
 
-
-
 def main():
     """Provided to help you play with your code."""
     import pprint
-    frequencies = file_character_frequencies(sys.argv[1])
-    codes = huffman_codes_from_frequencies(frequencies)
-    """
-    l = shuffled_list(20, 0)
-    h = Heap(l)
-    print(l)
-    printCompleteTree(h.A)
-    h.buildHeap()
-    printCompleteTree(h.A)
-    """
 
 
 if __name__ == '__main__':
