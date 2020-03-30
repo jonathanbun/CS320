@@ -10,49 +10,51 @@ def read_array(filename):
     return in_list
 
 
-# implement
+def merge_sort(in_list, l_index, r_index):
+    if l_index >= r_index:
+        return 0
+    mid = (l_index + r_index) // 2
+    a = merge_sort(in_list, l_index, mid)
+    b = merge_sort(in_list, mid + 1, r_index)
+    c = merge_i(in_list, l_index, r_index, mid)
+    return a + b + c[0]
+
+
 def count_inversions(in_list):
     if len(in_list) <= 1:
         return 0
-    if len(in_list) % 2 != 0:
-        temp = (len(in_list) // 2) + 1
-    else:
-        temp = (len(in_list) // 2)
-
-    list_a = in_list[0: temp]
-    list_b = in_list[temp:]
-
-    ra = count_inversions(list_a)
-    rb = count_inversions(list_b)
-
-    count = merge_i(list_a, list_b)
-
-    return ra + rb + count
+    return merge_sort(in_list, 0, len(in_list) - 1)
 
 
-# implement
-def merge_i(l_list, r_list):
-    count = 0
-    i = 0
-    j = 0
-    result = []
-    while i < len(l_list) and j < len(r_list):
-        if l_list[i] < r_list[j]:
-            result.append(l_list[i])
-            i += 1
-        if l_list[i] > r_list[j]:
-            result.append(r_list[j])
-            count += (len(l_list) - i)
-            j += 1
+def merge_i(in_list, l_index, r_index, mid):
+    l_list = in_list[l_index:mid + 1]
+    r_list = in_list[mid + 1:r_index + 1]
+    l_index_copy = 0
+    r_index_copy = 0
+    sorted_index = l_index
+    result = 0
 
-    if len(l_list) < 1 and len(r_list) > 0:
-        result.append(r_list)
-    if len(r_list) < 1 and len(l_list) > 0:
-        result.append(l_list)
-    return count
+    while l_index_copy < len(l_list) and r_index_copy < len(r_list):
+        if l_list[l_index_copy] <= r_list[r_index_copy]:
+            in_list[sorted_index] = l_list[l_index_copy]
+            l_index_copy += 1
+        else:
+            in_list[sorted_index] = r_list[r_index_copy]
+            result += (len(l_list) - l_index_copy)
+            r_index_copy += 1
+        sorted_index += 1
+    while l_index_copy < len(l_list):
+        in_list[sorted_index] = l_list[l_index_copy]
+        l_index_copy += 1
+        sorted_index += 1
+
+    while r_index_copy < len(r_list):
+        in_list[sorted_index] = r_list[r_index_copy]
+        r_index_copy += 1
+        sorted_index += 1
+    return result, in_list
 
 
-# provided
 if __name__ == '__main__':
     filename = sys.argv[1]
     in_list = read_array(filename)
