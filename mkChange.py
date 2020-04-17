@@ -5,17 +5,25 @@ coins = [1,5,10,25]
 calls = 0
 reads = 0
 
+
 ''' Making Change recursively using the recurrence in the slides '''
 def mkChangeDC(n, c):
    global calls
-   return 0
+   calls += 1
+   if c==0:
+      return 1
+   sum = 0
+   for x in range(0, (n//coins[c]) + 1):
+      temp = coins[c] * x
+      sum += mkChangeDC(n-temp, c-1)
+
+   return sum
 
 ''' Making Change recursively avoiding the loop in mkChangeDC
     Based on a different recurrence
 '''
 def mkChangeDC1(n, c):
    global calls
-   return 0
 
 ''' Dynamic Programming version of mkChangeDC '''
 def mkChangeDP(n):
