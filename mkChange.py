@@ -16,7 +16,6 @@ def mkChangeDC(n, c):
    for x in range(0, (n//coins[c]) + 1):
       temp = coins[c] * x
       sum += mkChangeDC(n-temp, c-1)
-
    return sum
 
 ''' Making Change recursively avoiding the loop in mkChangeDC
@@ -24,6 +23,16 @@ def mkChangeDC(n, c):
 '''
 def mkChangeDC1(n, c):
    global calls
+   calls+=1
+   if c==0:
+      return 1
+   if n<0:
+      return 0
+   if n==0:
+      return 1
+   sum = mkChangeDC1(n - coins[c], c)
+   sum1 =  mkChangeDC1(n, c-1)
+   return sum + sum1
 
 ''' Dynamic Programming version of mkChangeDC '''
 def mkChangeDP(n):
