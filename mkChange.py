@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import math
 
 coins = [1,5,10,25]
 calls = 0
@@ -37,12 +38,48 @@ def mkChangeDC1(n, c):
 ''' Dynamic Programming version of mkChangeDC '''
 def mkChangeDP(n):
    global reads
-   return 0
+   table = [[0 for x in range(len(coins))] for x in range(n)]
+
+   for i in range(len(coins)):
+      table[0][i] = 1
+
+   for i in range(0, n):
+
+      for j in range(0, len(coins)):
+         reads += 2
+         table[i][j] = table[i-coins[j]][j] + table[i][j-1]
+
+
+
+
+
+
+   return table[n - 1][len(coins) - 1]
+
 
 ''' Dynamic Programming version of mkChangeDC1 '''
-def mkChangeDP1(cap):
+def mkChangeDP1(n):
    global reads
-   return 0
+   table = [[0 for x in range(len(coins))] for x in range(n)]
+
+   for i in range(len(coins)):
+      table[0][i] = 1
+
+   for i in range(1, n):
+      for j in range(len(coins)):
+         if i - coins[j] >= 0:
+            x = table[i - coins[j]][j]
+            reads += 1
+         else:
+            x = 0
+         if j >= 1:
+            y = table[i][j - 1]
+            reads += 1
+         else:
+            y = 0
+         table[i][j] = x + y
+
+   return table[n - 1][len(coins) - 1]
 
 if __name__ == "__main__":
    c = len(coins)-1
@@ -81,13 +118,13 @@ if __name__ == "__main__":
 
    #uncomment below lines to save the files for your analysis
    print("dataDC:", dataDC)
-   # np.savetxt('dataDC', dataDC, delimiter=',', fmt='%d') 
+   np.savetxt('dataDC', dataDC, delimiter=',', fmt='%d')
 
    print("dataDC1:",dataDC1)
-   # np.savetxt('dataDC1', dataDC1, delimiter=',', fmt='%d')
+   np.savetxt('dataDC1', dataDC1, delimiter=',', fmt='%d')
 
    print("dataDP:", dataDP)
-   # np.savetxt('dataDP', dataDP, delimiter=',', fmt='%d')
+   np.savetxt('dataDP', dataDP, delimiter=',', fmt='%d')
 
    print("dataDP1:",dataDP1)
-   # np.savetxt('dataDP1', dataDP1, delimiter=',', fmt='%d')
+   pnp.savetxt('dataDP1', dataDP1, delimiter=',', fmt='%d')
