@@ -12,8 +12,15 @@ def get_closest_pair(P):
     call to compute_closest_points(P, X, Y)
     This function will be called and timed by the grading script'''
     # Your code here
-    # return point1, point2, delta
-    return 1, 2, 3.0 #placeholder
+    temp = P.copy()
+    X = sorted(temp, key=lambda row: row[1])
+    Y = sorted(temp, key=lambda row: row[2])
+    print(X)
+    print(Y)
+    print(P)
+
+    point1, point2, delta = compute_closest_points(P, X, Y)
+    return point1, point2, delta
 
 
 def compute_closest_points(P, X, Y):
@@ -21,8 +28,8 @@ def compute_closest_points(P, X, Y):
     by y coordinates) as input and returns the pair of closest points, along
     with the distance between them
     Implement Divide and Conquer strategy here'''
-    # Your code here
-    # return point1, point2, delta
+
+    return 0,0,0
 
 
 def brute_force(X):
